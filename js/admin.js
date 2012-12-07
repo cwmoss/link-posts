@@ -68,7 +68,7 @@
                 type: 'post',
                 dataType: 'html',
                 data: { 
-                    'action' : 'recommended_author_posts_search', 
+                    'action' : 'author_recommended_posts_search', 
                     's' : searchVal
                 },
                 success: function( html ){
@@ -86,8 +86,8 @@
                 var val = $(this).val();
                 
                 // ajax
-                clearTimeout( self.recommended_author_posts_timeout );
-                self.recommended_author_posts_timeout = setTimeout(function(){
+                clearTimeout( self.author_recommended_posts_timeout );
+                self.author_recommended_posts_timeout = setTimeout(function(){
                     self.update_results( val );
                 }, 250);
                 

@@ -1,5 +1,5 @@
 === Author Recommended Posts ===
-Contributors: dtelepathy, oriontimbers, dtlabs, kynatro, jamie3d, bkenyon
+Contributors: dtelepathy, oriontimbers, dtlabs, kynatro, jamie3d, bkenyon, moonspired
 Donate link: http://www.dtelepathy.com/labs
 Tags: related posts, author posts, recommended, reading, author recommended posts, recommended author posts, recommended posts, reading, specific posts, plugin, list of posts, recommended articles
 Requires at least: 3.3
@@ -57,10 +57,17 @@ We did not really find any plugins out there that does just this. And we wanted 
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed posts search order to Desc
+* Updateing namespacing in admin.js
+
 = 1.0 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Minor bug fixes 
 
 = 1.0 =
 Initial release
