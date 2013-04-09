@@ -3,7 +3,7 @@
 Plugin Name: Author Recommended Posts
 Plugin URI: http://
 Description: A simple WordPress plugin that allows the author to pick recommended reading of posts, on a per post basis
-Version: 1.0.1
+Version: 1.0.2
 Author: digital-telepathy
 Author URI: http://www.dtelepathy.com
 License: GPL3
@@ -30,7 +30,7 @@ require_once( dirname( __FILE__ ) . '/lib/constants.php' );
 class AuthorRecommendedPosts {
     static $html_newline = "\n";
     var $namespace = "author_recommended_posts";
-    var $version = "1.0.1";
+    var $version = "1.0.2";
     
     // Default plugin options
     var $defaults = array(
@@ -379,6 +379,7 @@ class AuthorRecommendedPosts {
      */
     function shortcode( $atts ) {
         global $post;
+        $namespace = $this->namespace;
         
         if ( isset( $atts['post_id'] ) && !empty( $atts['post_id'] ) ){
             $shortcode_post_id = $atts['post_id']; 
@@ -386,17 +387,17 @@ class AuthorRecommendedPosts {
             $shortcode_post_id = $post->ID;
         }
         
-        $recommended_ids = get_post_meta( $shortcode_post_id, $this->namespace, true );
+        $recommended_ids = get_post_meta( $shortcode_post_id, $namespace, true );
         
         $html = '';
 
         if( $recommended_ids ){
             
-            $html_title = $this->get_option( "{$this->namespace}_title" );
-            $show_title = $this->get_option( "{$this->namespace}_show_title" );
-            $show_featured_image = $this->get_option( "{$this->namespace}_show_featured_image" );
-            $format_horizontal = $this->get_option( "{$this->namespace}_format_is_horizontal" );
-            $author_recommended_posts_post_types = $this->get_option( "{$this->namespace}_post_types" );
+            $html_title = $this->get_option( "{$namespace}_title" );
+            $show_title = $this->get_option( "{$namespace}_show_title" );
+            $show_featured_image = $this->get_option( "{$namespace}_show_featured_image" );
+            $format_horizontal = $this->get_option( "{$namespace}_format_is_horizontal" );
+            $author_recommended_posts_post_types = $this->get_option( "{$namespace}_post_types" );
             
             ob_start( );
             include( AUTHOR_RECOMMENDED_POSTS_DIRNAME . '/views/_author-recommended-posts-list.php' );

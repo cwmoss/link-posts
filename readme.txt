@@ -3,7 +3,7 @@ Contributors: dtelepathy, oriontimbers, dtlabs, kynatro, jamie3d, bkenyon, moons
 Donate link: http://www.dtelepathy.com/labs
 Tags: related posts, author posts, recommended, reading, author recommended posts, recommended author posts, recommended posts, reading, specific posts, plugin, list of posts, recommended articles
 Requires at least: 3.3
-Tested up to: 3.4.2
+Tested up to: 3.5
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -56,6 +56,8 @@ At this time no, we want to add this in though. So keep your eyes peeled.
 We did not really find any plugins out there that does just this. And we wanted something quick, simple, and easy to use.
 
 == Changelog ==
+= 1.0.2 =
+* Added 2 new actions author_recommended_posts_before_related and author_recommended_posts_after_related that can be hooked into for outputting custom content before or after each related entry
 
 = 1.0.1 =
 * Fixed posts search order to Desc
@@ -65,6 +67,8 @@ We did not really find any plugins out there that does just this. And we wanted 
 * Initial release
 
 == Upgrade Notice ==
+= 1.0.2 =
+Minor additions
 
 = 1.0.1 =
 Minor bug fixes 

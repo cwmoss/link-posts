@@ -10,7 +10,7 @@
  */
 
 // The current version of this plugin
-if( !defined( 'AUTHOR_RECOMMENDED_POSTS_VERSION' ) ) define( 'AUTHOR_RECOMMENDED_POSTS_VERSION', '1.0.0' );
+if( !defined( 'AUTHOR_RECOMMENDED_POSTS_VERSION' ) ) define( 'AUTHOR_RECOMMENDED_POSTS_VERSION', '1.0.2' );
 
 // The directory the plugin resides in
 if( !defined( 'AUTHOR_RECOMMENDED_POSTS_DIRNAME' ) ) define( 'AUTHOR_RECOMMENDED_POSTS_DIRNAME', dirname( dirname( __FILE__ ) ) );

@@ -14,10 +14,14 @@
             
             <li<?php echo($recommended_post_thumbnail_id)? ' class="has-thumbnail"' : '';?>>
                 <div>
+                    <?php do_action( "{$namespace}_before_related", $recommended_id ); ?>
+                    
                     <?php if( $recommended_post_thumbnail_id ) { ?>
                         <a href="<?php echo get_permalink( $recommended_id ); ?>" class="related-thumbnail" style="background-image:url('<?php echo $recommended_post_thumbnail_src[0]; ?>');">&nbsp;</a>
                     <?php } ?>
                     <a href="<?php echo get_permalink( $recommended_id ); ?>" class="related-title"><?php echo get_the_title( $recommended_id ); ?></a>
+                    
+                    <?php do_action( "{$namespace}_after_related", $recommended_id ); ?>
                 </div>
             </li>
             
