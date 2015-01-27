@@ -3,7 +3,7 @@
 Plugin Name: Author Recommended Posts
 Plugin URI: http://
 Description: A simple WordPress plugin that allows the author to pick recommended reading of posts, on a per post basis
-Version: 1.0.2
+Version: 1.0.3
 Author: digital-telepathy
 Author URI: http://www.dtelepathy.com
 License: GPL3
@@ -30,7 +30,7 @@ require_once( dirname( __FILE__ ) . '/lib/constants.php' );
 class AuthorRecommendedPosts {
     static $html_newline = "\n";
     var $namespace = "author_recommended_posts";
-    var $version = "1.0.2";
+    var $version = "1.0.3";
     
     // Default plugin options
     var $defaults = array(
