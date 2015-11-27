@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: Author Recommended Posts
+Plugin Name: Link Posts
 Plugin URI: http://
-Description: A simple WordPress plugin that allows the author to pick recommended reading of posts, on a per post basis
-Version: 1.0.3
-Author: digital-telepathy
-Author URI: http://www.dtelepathy.com
+Description: A simple WordPress plugin that allows the author to pick recommended reading of posts, on a per post basis, based on "Author Recommended Posts" by digital-telepathy (http://www.dtelepathy.com)
+Version: 1.0.2
+Author: playdead
+Author URI: http://20sec.net
 License: GPL3
 
 Copyright 2012 digital-telepathy  (email : support@digital-telepathy.com)
@@ -29,18 +29,22 @@ require_once( dirname( __FILE__ ) . '/lib/constants.php' );
 
 class AuthorRecommendedPosts {
     static $html_newline = "\n";
-    var $namespace = "author_recommended_posts";
-    var $version = "1.0.3";
+    
+    static $i; # all instances
+    
+    var $namespace;
+    var $version = "1.0.2";
     
     // Default plugin options
     var $defaults = array(
-        'author_recommended_posts_title' => "Author Recommended Posts",
-        'author_recommended_posts_show_title' => true,
-        'author_recommended_posts_show_featured_image' => false,
-        'author_recommended_posts_format_is_horizontal' => true,
-        'author_recommended_posts_post_types' => array( 'post' ),
-        'author_recommended_posts_output_after_content' => true,
-        'author_recommended_posts_auto_output' => array( 'post' )
+        'title' => "Related Posts",
+        'shortcode' => 'related',
+        'show_title' => true,
+        'show_featured_image' => false,
+        'format_is_horizontal' => true,
+        'post_types' => array( 'post' ),
+        'output_after_content' => false,
+        'auto_output' => array( 'post' )
     );
     
     /**
@@ -50,12 +54,17 @@ class AuthorRecommendedPosts {
      * @uses AuthorRecommendedPosts::wp_register_scripts()
      * @uses AuthorRecommendedPosts::wp_register_styles()
      */
-    function __construct() {
+    function __construct($namespace = "author_recommended_posts", $options=array()) {
+       $this->namespace = $namespace;
         // Name of the option_value to store plugin options in
         $this->option_name = '_' . $this->namespace . '--options';
         
+        if(!is_array($options)) $options=array();
+        $options = array_merge($this->defaults, $options);
+        $this->defaults = $options;
+        
         // Set and Translate the friendly name
-        $this->friendly_name = __( "Author Recommended Posts", $this->namespace );
+        $this->friendly_name = __($options['title'], $this->namespace );
 		
         // Load all library files used by this plugin
         $libs = glob( AUTHOR_RECOMMENDED_POSTS_DIRNAME . '/lib/*.php' );
@@ -70,7 +79,7 @@ class AuthorRecommendedPosts {
         load_theme_textdomain( $this->namespace, AUTHOR_RECOMMENDED_POSTS_DIRNAME . '/languages' );
 
 		// Add all action, filter and shortcode hooks
-		$this->_add_hooks();
+		   $this->_add_hooks();
     }
     
     /**
@@ -109,7 +118,12 @@ class AuthorRecommendedPosts {
         // Ajax handler for searching/filter posts
         add_action( 'wp_ajax_author_recommended_posts_search', array( &$this, 'author_recommended_posts_search') );
         
-        add_shortcode( 'AuthorRecommendedPosts', array( &$this, 'shortcode') );
+        $sc = $this->defaults['shortcode'];
+        if($sc=='related' && $this->namespace!='author_recommended_posts') $sc.='-'.$this->namespace;
+         
+        if($sc){
+           add_shortcode($sc, array( &$this, 'shortcode') );
+        }
     }
     
     /**
@@ -128,7 +142,7 @@ class AuthorRecommendedPosts {
              * note that rich text (or full HTML fields) should not be processed by this function and 
              * dealt with directly.
              */
-            foreach( $_POST['data'] as $key => $val ) {
+            foreach( $_POST['data'][$this->namespace] as $key => $val ) {
                 $data[$key] = $this->_sanitize( $val );
             }
             
@@ -138,8 +152,8 @@ class AuthorRecommendedPosts {
             
             // Checking to see if Output Options are empty, if they are we are setting an empty array so it does not pull in defaults
             // Defaults come in when the option is not set, so basically this sets the option to nothing 
-            if( empty( $data["author_recommended_posts_auto_output"] ) ){
-                $data["author_recommended_posts_auto_output"] = array();
+            if( empty( $data["auto_output"] ) ){
+                $data["auto_output"] = array();
             }
             
             // Update the options value with the data submitted
@@ -197,13 +211,13 @@ class AuthorRecommendedPosts {
      */
     function add_recommended_meta_box() {
         // set post_types that this meta box shows up on.
-        $author_recommended_posts_post_types = $this->get_option( "{$this->namespace}_post_types" );
+        $author_recommended_posts_post_types = $this->get_option( "post_types" );
         
         foreach( $author_recommended_posts_post_types as $author_recommended_posts_post_type ) {
             // adds to posts $post_type
             add_meta_box( 
                 $this->namespace . '-recommended_meta_box',
-                __( 'Author Recommended Posts', $this->namespace ),
+                __( $this->get_option('title'), $this->namespace ),
                 array( &$this, 'recommended_meta_box' ),
                 $author_recommended_posts_post_type,
                 'side',
@@ -220,9 +234,10 @@ class AuthorRecommendedPosts {
      * which posts they want to pull into the Recommended Author Reading section
      */
     function recommended_meta_box( $object, $box ) {
+        $namespace = $this->namespace;
         
         $author_recommended_posts = get_post_meta( $object->ID, $this->namespace, true );
-        $author_recommended_posts_post_types = $this->get_option( "{$this->namespace}_post_types" );
+        $author_recommended_posts_post_types = $this->get_option( "post_types" );
         $author_recommended_posts_search_results = $this->author_recommended_posts_search();
         $author_recommended_posts_options_url = admin_url() . '/options-general.php?page=' . $this->namespace;
         
@@ -235,7 +250,7 @@ class AuthorRecommendedPosts {
         $html = '';
         
         // set post_types that get filtered in the search box.
-        $author_recommended_posts_post_types = $this->get_option( "{$this->namespace}_post_types" );
+        $author_recommended_posts_post_types = $this->get_option( "post_types" );
         
         // set default query options
         $options = array(
@@ -303,11 +318,12 @@ class AuthorRecommendedPosts {
     }
     
     function saving_recommended_posts_ids( $post_id, $post ) {
+        if( ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) return;
         
-        if( isset( $_REQUEST['_post_ids_nonce'] ) && !empty( $_REQUEST['_post_ids_nonce'] ) ){
+        if( isset( $_REQUEST["{$this->namespace}_post_ids_nonce"] ) && !empty( $_REQUEST["{$this->namespace}_post_ids_nonce"] ) ){
             
             // Verfiy the nonce before proceeding
-            if( !wp_verify_nonce( $_REQUEST['_post_ids_nonce'], "{$this->namespace}_post_ids_nonce" ) ) {
+            if( !wp_verify_nonce( $_REQUEST["{$this->namespace}_post_ids_nonce"], "{$this->namespace}" ) ) {
                 return $post_id;
             }
             
@@ -320,8 +336,17 @@ class AuthorRecommendedPosts {
             }
             
             // Get the posted data and sanitize
-            $new_meta_value = ( isset( $_POST['author-recommended-posts'] ) ? $this->_sanitize( $_POST['author-recommended-posts'] ) : '' );
+            $new_meta_value = ( isset( $_POST["arp-{$this->namespace}-posts"] ) ? $this->_sanitize( $_POST["arp-{$this->namespace}-posts"] ) : '' );
             
+            dbglog("+++ link setzen +++ $post_id ==> ");
+            dbglog($new_meta_value);
+            dbglog($_POST["arp-{$this->namespace}-posts"]);
+            
+				$this->update_links($post_id, $new_meta_value);
+				
+				# ende
+				return;
+				
             // Get the meta key
             $meta_key = $this->namespace;
             
@@ -344,6 +369,97 @@ class AuthorRecommendedPosts {
         }
     }
     
+	function get_link_ids($post){
+		$id = $post;
+		if(is_array($id)){
+			$id = $post['ID'];
+		}elseif(is_object($id)){
+			$id = $post->ID;
+		}
+		$ids = get_post_meta( $id, $this->namespace, true );
+		if($ids == '') $ids = null;
+		return (array) $ids;
+	}
+	
+	function add_link($from, $to, $bidirect=true){
+	   dbglog("FROM $from ==> ");
+	   dbglog($to);
+	   
+		$ids = $this->get_link_ids($from);
+		if(is_array($to)){
+			$to = $to['ID'];
+		}elseif(is_object($id)){
+			$to = $to->ID;
+		}
+		# link existiert bereits
+		if(in_array($to, $ids)) return;
+		$new_ids = $ids;
+		$new_ids[] = $to;
+		if($bidirect){
+			$this->update_links($from, $new_ids, $ids);
+		}else{
+			$this->update_links($from, $new_ids, $ids, false);
+		}
+	}
+	
+	function remove_link($from, $to, $bidirect=true){
+		$ids = $this->get_link_ids($from);
+		if(is_array($to)){
+			$to = $to['ID'];
+		}elseif(is_object($id)){
+			$to = $to->ID;
+		}
+		# link ist nicht vorhanden
+		$found = array_search($to, $ids);
+		if($found === false) return;
+		$new_ids = $ids;
+		unset($new_ids[$found]);
+		$new_ids = array_merge($new_ids);
+		if($bidirect){
+			$this->update_links($from, $new_ids, $ids);
+		}else{
+			$this->update_links($from, $new_ids, $ids, false);
+		}
+	}
+	
+	function update_links($from, $new_ids, $old_ids=null, $bidirect=true){
+		if($new_ids=='') $new_ids=array();
+		$new_ids = array_unique($new_ids);
+		if(is_null($old_ids)) $old_ids = $this->get_link_ids($from);
+		if($bidirect){
+			# link löschen?
+			foreach($old_ids as $old){
+				if(!in_array($old, $new_ids)){
+					$this->remove_link($old, $from, false);
+				}
+			}
+			# link hinzufügen?
+			foreach($new_ids as $new){
+				if(!in_array($new, $old_ids)){
+					$this->add_link($new, $from, false);
+				}
+			}
+		}
+		$meta_key = $this->namespace;
+		
+		update_post_meta( $from, $meta_key, $new_ids );
+		return;
+		
+		####### nur noch UPDATE! verwenden
+		// If the new meta value was added and there was no previous value, add it.
+      if ( $new_ids && !$old_ids ) {
+          add_post_meta( $from, $meta_key, $new_ids, true );
+      
+      // If the new meta value does not match the old value, update it.
+      } elseif ( $new_ids && $new_ids != $old_ids ) {
+          update_post_meta( $from, $meta_key, $new_ids );
+      
+      // If there is no new meta value but an old value exists, delete it.
+      } elseif ( !$new_ids && $old_ids ) {
+          delete_post_meta( $from, $meta_key, $old_ids);
+      }
+	}
+	
     /**
      * Runs the shortcode in the content filter if single view
      * 
@@ -355,7 +471,7 @@ class AuthorRecommendedPosts {
      */
     function recommended_posts_output( $content ){
         global $post;    
-        $author_recommended_posts_auto_output = $this->get_option( "{$this->namespace}_auto_output" );
+        $author_recommended_posts_auto_output = $this->get_option( "auto_output" );
 
         if( is_singular() ) {
             if ( in_array( $post->post_type, $author_recommended_posts_auto_output ) ) {
@@ -392,12 +508,17 @@ class AuthorRecommendedPosts {
         $html = '';
 
         if( $recommended_ids ){
+            $recommended_ids = array_unique($recommended_ids);
+
+            if(has_filter('related_shortcode')){
+               return apply_filters('related_shortcode', $namespace, $recommended_ids);
+            }
             
-            $html_title = $this->get_option( "{$namespace}_title" );
-            $show_title = $this->get_option( "{$namespace}_show_title" );
-            $show_featured_image = $this->get_option( "{$namespace}_show_featured_image" );
-            $format_horizontal = $this->get_option( "{$namespace}_format_is_horizontal" );
-            $author_recommended_posts_post_types = $this->get_option( "{$namespace}_post_types" );
+            $html_title = $this->get_option( "title" );
+            $show_title = $this->get_option( "show_title" );
+            $show_featured_image = $this->get_option( "show_featured_image" );
+            $format_horizontal = $this->get_option( "format_is_horizontal" );
+            $author_recommended_posts_post_types = $this->get_option( "post_types" );
             
             ob_start( );
             include( AUTHOR_RECOMMENDED_POSTS_DIRNAME . '/views/_author-recommended-posts-list.php' );
@@ -506,6 +627,8 @@ class AuthorRecommendedPosts {
         // Load option values if they haven't been loaded already
         if( !isset( $this->options ) || empty( $this->options ) ) {
             $this->options = get_option( $this->option_name, $this->defaults );
+      #      var_dump($this->option_name);
+      #      var_dump($this->options);
         }
         
         if( isset( $this->options[$option_name] ) ) {
@@ -522,11 +645,10 @@ class AuthorRecommendedPosts {
      * Instantiates the class on a global variable and sets the class, actions
      * etc. up for use.
      */
-    static function instance() {
-        global $AuthorRecommendedPosts;
-        
+    static function instance($namespace = "author_recommended_posts", $opts=array()) {
         // Only instantiate the Class if it hasn't been already
-        if( !isset( $AuthorRecommendedPosts ) ) $AuthorRecommendedPosts = new AuthorRecommendedPosts();
+        if( !isset( self::$i[$namespace]) ) self::$i[$namespace] = new AuthorRecommendedPosts($namespace, $opts);
+		  return self::$i[$namespace];
     }
 	
 	/**
@@ -589,7 +711,9 @@ class AuthorRecommendedPosts {
      */
     function wp_register_scripts() {
         // Admin JavaScript
-        wp_register_script( "{$this->namespace}-admin", AUTHOR_RECOMMENDED_POSTS_URLPATH . "/js/admin.js", array( 'jquery' ), $this->version, true );
+        static $reg=false;
+        if(!$reg) wp_register_script( "{$this->namespace}-admin", AUTHOR_RECOMMENDED_POSTS_URLPATH . "/js/admin.js", array( 'jquery' ), $this->version, true );
+        $reg=true;
     }
     
     /**
@@ -599,10 +723,14 @@ class AuthorRecommendedPosts {
      */
     function wp_register_styles() {
         // Admin Stylesheet
+        static $reg=false;
+        if(!$reg){
         wp_register_style( "{$this->namespace}-admin", AUTHOR_RECOMMENDED_POSTS_URLPATH . "/css/admin.css", array(), $this->version, 'screen' );
         
         // Public Stylesheet
         wp_register_style( "{$this->namespace}-public", AUTHOR_RECOMMENDED_POSTS_URLPATH . "/css/public.css", array(), $this->version, 'screen' );
+         }
+         $reg=true;  
     }
     
     /**
@@ -614,9 +742,10 @@ class AuthorRecommendedPosts {
         wp_enqueue_style( "{$this->namespace}-public" );
     }
 }
-if( !isset( $AuthorRecommendedPosts ) ) {
-	AuthorRecommendedPosts::instance();
-}
 
-register_activation_hook( __FILE__, array( 'AuthorRecommendedPosts', 'activate' ) );
-register_deactivation_hook( __FILE__, array( 'AuthorRecommendedPosts', 'deactivate' ) );
+/*
+   compatibilität für alte version
+   
+   new AuthorRecommendedPosts('author_recommended_posts', array('shortcode'=>'AuthorRecommendedPosts'));
+   
+*/

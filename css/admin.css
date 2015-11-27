@@ -4,11 +4,11 @@
  * @version 1.0.0
  * @since 1.0.0
  */
-#recommended-posts-search {
+.arp-search {
 	position: relative;
 	margin-bottom: 5px;
 }
-#recommended-posts-search label {
+.arp-search label {
 	position: absolute;
 	z-index: 10;
 	top: 0;
@@ -19,7 +19,7 @@
 	cursor: text;
 	color: #999;
 }
-#recommended-posts-results {
+.arp-results {
 	position: relative;
 	height: 100px;
 	overflow-y: auto;
@@ -27,7 +27,7 @@
 	background: #fff;
 	border: 1px solid #DFDFDF;
 }
-#recommended-posts-results ul {
+.arp-results ul {
 	position: relative;
 	overflow: hidden;
 	padding: 0;
@@ -35,10 +35,10 @@
 	list-style-type: none;
 	width: 100%;
 }
-#recommended-posts-results ul li {
+.arp-results ul li {
 	margin: 0;
 }
-#recommended-posts-results ul li a {
+.arp-results ul li a {
 	position: relative;
 	display: block;
 	padding: 0 5px;
@@ -47,18 +47,18 @@
 	font-size: 11px;
 	text-decoration: none;
 }
-#recommended-posts-results ul li a:hover {
+.arp-results ul li a:hover {
 	background: #efefef;
 	color: #333;
 }
-#recommended-posts-results ul li a span.recommended-posts-title {
+.arp-results ul li a span.recommended-posts-title {
 	display: inline-block;
 	white-space: nowrap;
 	width: 80%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#recommended-posts-results ul li a span.recommended-posts-post-type {
+.arp-results ul li a span.recommended-posts-post-type {
 	position: absolute;
 	display: inline-block;
 	top: 0;
@@ -70,41 +70,41 @@
 	width: 15%;
 	text-align: right;
 }
-#recommended-posts-results ul li,
-#recommended-posts-results ul li a,
-#recommended-posts-results ul li a span.recommended-posts-title,
-#recommended-posts-results ul li a span.recommended-posts-post-type {
+.arp-results ul li,
+.arp-results ul li a,
+.arp-results ul li a span.recommended-posts-title,
+.arp-results ul li a span.recommended-posts-post-type {
 	height: 25px;
 	line-height: 25px;
 }
-#recommended-posts-results ul li.selected {
+.arp-results ul li.selected {
 	background: #f7f7f7;
 	font-style: italic;
 }
-#recommended-posts-results ul li.selected a {
+.arp-results ul li.selected a {
 	color: #ccc;
 	font-weight: normal;
 	cursor: default;
 }
 
-#recommended-posts-items-container {
+.arp-items-container {
 	position: relative;
 	overflow: hidden;
 }
-#recommended-posts-items-container div {
+.arp-items-container div {
 	position: relative;
 	overflow: hidden;
 	height: 30px;
 	line-height: 30px;
 	border-top: 1px solid #DFDFDF;
 }
-#recommended-posts-items-container div:hover {
+.arp-items-container div:hover {
 	background: #efefef;
 }
-#recommended-posts-items-container div:first-child {
+.arp-items-container div:first-child {
 	border-top: none;
 }
-#recommended-posts-items-container div span.ui-handle {
+.arp-items-container div span.ui-handle {
 	display: inline-block;
 	float: left;
 	width: 16px;
@@ -112,7 +112,7 @@
 	background: url('../images/admin-sort-icon.png') 0 center no-repeat;
 	cursor: move;
 }
-#recommended-posts-items-container div span.recommended-post-title {
+.arp-items-container div span.recommended-post-title {
 	display: inline-block;
 	white-space: nowrap;
 	width: 80%;
@@ -122,7 +122,7 @@
 	float: left;
 	font-weight: bold;
 }
-#recommended-posts-items-container div a.remove-recommended-post {
+.arp-items-container div a.remove-recommended-post {
 	position: relative;
 	float: right;
 	top: 4px;

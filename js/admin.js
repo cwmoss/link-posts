@@ -7,7 +7,8 @@
 
 (function($){
 	
-	var authorRecommendedPosts = {
+	var ARP = function($box, ns){
+	   var inst = {
 	    post_entry_rows: function(){
 	        var self = this;
 	        if( self.recommended_post_items_container.length ){
@@ -50,7 +51,7 @@
     	            var recommended_post_item = '<div class="author-recommended-post-row" data-post_id="'+ recommended_post_item_id +'">';
     	            recommended_post_item += '<span class="ui-handle"></span>';
     	            recommended_post_item += '<span class="recommended-post-title">'+ recommended_post_item_title +'</span>';
-    	            recommended_post_item += '<input type="hidden" name="author-recommended-posts[]" value="'+ recommended_post_item_id +'" />';
+    	            recommended_post_item += '<input type="hidden" name="arp-'+self.namespace+'-posts[]" value="'+ recommended_post_item_id +'" />';
     	            recommended_post_item += '<a href="#remove" class="button remove-recommended-post">&#215;</a>';
     	            recommended_post_item += '</div>';
     	            
@@ -77,12 +78,16 @@
                 }
             });
 	    },
-	    init: function(){
+	    namespace: null,
+	    init: function($box, ns){
 	        var self = this;
-	        self.recommended_post_results_container = $('#recommended-posts-results');
+	        self.namespace=ns;
+	        console.log($box);
+	        console.log('NAME: '+ns);
+	        self.recommended_post_results_container = $('.arp-results:first', $box);
 	        self.recommended_post_results_ul = self.recommended_post_results_container.find('ul');
-	        self.recommended_post_items_container = $('#recommended-posts-items-container');
-	        $('#author-recommended-posts-search').on('keyup', function(){
+	        self.recommended_post_items_container = $('.arp-items-container', $box);
+	        $('#arp-'+ns+'-q').on('keyup', function(){
                 var val = $(this).val();
                 
                 // ajax
@@ -105,10 +110,17 @@
             self.selected_result();
             self.post_entry_rows();
 	    }
+	   };
+	   inst.init($box, ns);
+	   return inst;
 	};
 	
 	$(function(){
-	    authorRecommendedPosts.init();
+	   $('div.arp-editor-box').each(function(){
+	      var $me = $(this);
+	      var ns = $me.data('namespace');
+	      new ARP($me, ns);
+	   });
 	});
 	
 })(jQuery);

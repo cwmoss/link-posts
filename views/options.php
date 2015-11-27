@@ -14,14 +14,14 @@
             
             <tr valign="top">
                 <th scope="row">Section title:</th>
-                <td><input type="text" name="data[author_recommended_posts_title]" value="<?php echo $this->get_option( 'author_recommended_posts_title' ); ?>" size="50"/></td>
+                <td><input type="text" name="data[<?=$namespace?>][posts_title]" value="<?php echo $this->get_option( 'posts_title' ); ?>" size="50"/></td>
             </tr>
             
             <tr valign="top">
                 <th scope="row">Show section title?</th>
                 <td>
-                    <label>Yes <input type="radio" name="data[author_recommended_posts_show_title]" value="1"<?php echo( $this->get_option( 'author_recommended_posts_show_title' ) )? ' checked="checked"' : '';?> /></label>
-                    <label>No <input type="radio" name="data[author_recommended_posts_show_title]" value="0"<?php echo( !$this->get_option( 'author_recommended_posts_show_title' ) )? ' checked="checked"' : '';?> /></label>
+                    <label>Yes <input type="radio" name="data[<?=$namespace?>][show_title]" value="1"<?php echo( $this->get_option( 'show_title' ) )? ' checked="checked"' : '';?> /></label>
+                    <label>No <input type="radio" name="data[<?=$namespace?>][show_title]" value="0"<?php echo( !$this->get_option( 'show_title' ) )? ' checked="checked"' : '';?> /></label>
                 </td>
             </tr>
             
@@ -29,8 +29,8 @@
             <tr valign="top">
                 <th scope="row">Show featured image?</th>
                 <td>
-                    <label>Yes <input type="radio" name="data[author_recommended_posts_show_featured_image]" value="1"<?php echo( $this->get_option( 'author_recommended_posts_show_featured_image' ) )? ' checked="checked"' : '';?> /></label>
-                    <label>No <input type="radio" name="data[author_recommended_posts_show_featured_image]" value="0"<?php echo( !$this->get_option( 'author_recommended_posts_show_featured_image' ) )? ' checked="checked"' : '';?> /></label>
+                    <label>Yes <input type="radio" name="data[<?=$namespace?>][show_featured_image]" value="1"<?php echo( $this->get_option( 'show_featured_image' ) )? ' checked="checked"' : '';?> /></label>
+                    <label>No <input type="radio" name="data[[<?=$namespace?>][show_featured_image]" value="0"<?php echo( !$this->get_option( 'show_featured_image' ) )? ' checked="checked"' : '';?> /></label>
                 </td>
             </tr>
             <?php endif; ?>
@@ -38,8 +38,8 @@
             <tr valign="top">
                 <th scope="row">Choose layout:</th>
                 <td>
-                    <label>Horizontal <input type="radio" name="data[author_recommended_posts_format_is_horizontal]" value="1"<?php echo( $this->get_option( 'author_recommended_posts_format_is_horizontal' ) )? ' checked="checked"' : '';?> /></label>
-                    <label>Vertical <input type="radio" name="data[author_recommended_posts_format_is_horizontal]" value="0"<?php echo( !$this->get_option( 'author_recommended_posts_format_is_horizontal' ) )? ' checked="checked"' : '';?> /></label>
+                    <label>Horizontal <input type="radio" name="data[[<?=$namespace?>][format_is_horizontal]" value="1"<?php echo( $this->get_option( 'format_is_horizontal' ) )? ' checked="checked"' : '';?> /></label>
+                    <label>Vertical <input type="radio" name="data[<?=$namespace?>][format_is_horizontal]" value="0"<?php echo( !$this->get_option( 'format_is_horizontal' ) )? ' checked="checked"' : '';?> /></label>
                 </td>
             </tr>
             
@@ -47,7 +47,7 @@
                 <th scope="row">Allow these to be chosen as related content:</th>
                 <td>
                     <?php foreach( $author_recommended_posts_post_types as $author_recommended_posts_post_type ) : ?>
-                        <label><input type="checkbox" name="data[author_recommended_posts_post_types][]" value="<?php echo $author_recommended_posts_post_type['slug']; ?>"<?php echo( in_array( $author_recommended_posts_post_type['slug'], $this->get_option( 'author_recommended_posts_post_types' ) ) )? ' checked="checked"' : '' ?>/> <?php echo $author_recommended_posts_post_type['name']; ?></label></br>
+                        <label><input type="checkbox" name="data[<?=$namespace?>][post_types][]" value="<?php echo $author_recommended_posts_post_type['slug']; ?>"<?php echo( in_array( $author_recommended_posts_post_type['slug'], $this->get_option( 'post_types' ) ) )? ' checked="checked"' : '' ?>/> <?php echo $author_recommended_posts_post_type['name']; ?></label></br>
                     <?php endforeach; ?>
                 </td>
             </tr>
@@ -56,7 +56,7 @@
                 <th scope="row">Automatically output after the content of these:</th>
                 <td>
                     <?php foreach( $author_recommended_posts_post_types as $author_recommended_posts_post_type ) : ?>
-                        <label><input type="checkbox" name="data[author_recommended_posts_auto_output][]" value="<?php echo $author_recommended_posts_post_type['slug']; ?>"<?php echo( in_array( $author_recommended_posts_post_type['slug'], $this->get_option( 'author_recommended_posts_auto_output' ) ) )? ' checked="checked"' : '' ?>/> <?php echo $author_recommended_posts_post_type['name']; ?></label></br>
+                        <label><input type="checkbox" name="data[<?=$namespace?>][auto_output][]" value="<?php echo $author_recommended_posts_post_type['slug']; ?>"<?php echo( in_array( $author_recommended_posts_post_type['slug'], $this->get_option( 'auto_output' ) ) )? ' checked="checked"' : '' ?>/> <?php echo $author_recommended_posts_post_type['name']; ?></label></br>
                     <?php endforeach; ?>
                 </td>
             </tr>
